@@ -5,6 +5,7 @@ import com.devsuperior.movieflix.dto.MovieDetailsDTO;
 import com.devsuperior.movieflix.dto.ReviewDTO;
 import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.projections.MovieProjection;
+import com.devsuperior.movieflix.projections.MovieReviewsProjection;
 import com.devsuperior.movieflix.repositories.MovieRepository;
 import com.devsuperior.movieflix.services.exceptions.ResourceNotFoundException;
 import com.devsuperior.movieflix.util.Utils;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,17 +44,18 @@ public class MovieService {
         return new PageImpl<>(dtos, page.getPageable(), page.getTotalElements());
     }
 
+    @Transactional(readOnly = true)
     public MovieDetailsDTO findById(Long id) {
         Optional<Movie> obj = repository.findById(id);
         Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new MovieDetailsDTO(entity);
     }
 
+    @Transactional(readOnly = true)
     public List<ReviewDTO> findAllReviewsByMovieId(Long id) {
         List<ReviewDTO> list;
-        Optional<Movie> obj = repository.findById(id);
-        Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
-        list = entity.getReviews().stream().map(r -> new ReviewDTO(r)).toList();
+        List<MovieReviewsProjection> projectionList = repository.findByIdWithReviews(id);
+        list = projectionList.stream().map(p -> new ReviewDTO(p)).toList();
         return list;
     }
 }
