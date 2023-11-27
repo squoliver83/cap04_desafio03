@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class MovieService {
@@ -28,7 +27,7 @@ public class MovieService {
     @Transactional(readOnly = true)
     public Page<MovieCardDTO> findAll(String genre, Pageable pageable) {
         Long genreId = 0L;
-        if(!"0".equals(genre)) {
+        if (!"0".equals(genre)) {
             genreId = Long.parseLong(genre);
         }
 
