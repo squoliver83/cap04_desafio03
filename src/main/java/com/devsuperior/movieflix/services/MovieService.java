@@ -2,6 +2,7 @@ package com.devsuperior.movieflix.services;
 
 import com.devsuperior.movieflix.dto.MovieCardDTO;
 import com.devsuperior.movieflix.dto.MovieDetailsDTO;
+import com.devsuperior.movieflix.dto.ReviewDTO;
 import com.devsuperior.movieflix.entities.Movie;
 import com.devsuperior.movieflix.projections.MovieProjection;
 import com.devsuperior.movieflix.repositories.MovieRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,5 +48,13 @@ public class MovieService {
         Optional<Movie> obj = repository.findById(id);
         Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
         return new MovieDetailsDTO(entity);
+    }
+
+    public List<ReviewDTO> findAllReviewsByMovieId(Long id) {
+        List<ReviewDTO> list;
+        Optional<Movie> obj = repository.findById(id);
+        Movie entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
+        list = entity.getReviews().stream().map(r -> new ReviewDTO(r)).toList();
+        return list;
     }
 }

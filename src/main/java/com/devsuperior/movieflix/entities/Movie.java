@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.devsuperior.movieflix.projections.IdProjection;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,11 +37,10 @@ public class Movie implements IdProjection<Long> {
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
-    @OneToMany(mappedBy = "movie")
+    @OneToMany(mappedBy = "movie", fetch = FetchType.EAGER)
     private List<Review> reviews = new ArrayList<>();
 
     public Movie(){
-
     }
 
     public Movie(Long id, String title, String subTitle, Integer year, String imgUrl, String synopsis, Genre genre) {
